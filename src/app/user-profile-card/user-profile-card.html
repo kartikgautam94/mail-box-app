@@ -1,0 +1,107 @@
+<div class="app-container">
+    <button class="hamburger-icon" (click)="toggleSidebar()">
+        &#9776;
+    </button>
+
+    <aside class="left-sidebar" [class.show]="showSidebar">
+        <div class="user-profile-card">
+            <img src="assets/images/mike.png" alt="User Avatar" class="user-profile-card__avatar">
+            <div class="user-profile-card__info">
+                <h3 class="user-profile-card__name">Mike Manson</h3>
+                <p class="user-profile-card__email">iamkiran@gmail.com</p>
+            </div>
+        </div>
+
+        <nav>
+            <a href="#" class="navigation-item" [class.navigation-item--active]="activePage === 'Inbox'"
+                (click)="setActivePage('Inbox')">
+                <img src="assets/images/Navbar/inbox.png" class="navigation-item__icon" />
+                <span class="navigation-item__text">Inbox</span>
+                <span class="navigation-item__badge" *ngIf="inboxCount > 0">{{ inboxCount }}</span>
+            </a>
+            <a href="#" class="navigation-item" [class.navigation-item--active]="activePage === 'Flagged'"
+                (click)="setActivePage('Flagged')">
+                <img src="assets/images/Navbar/flagged.png" class="navigation-item__icon" />
+                <span class="navigation-item__text">Flagged</span>
+            </a>
+            <a href="#" class="navigation-item" [class.navigation-item--active]="activePage === 'Draft'"
+                (click)="setActivePage('Draft')">
+                <img src="assets/images/Navbar/draft.png" class="navigation-item__icon" />
+                <span class="navigation-item__text">Draft</span>
+            </a>
+            <a href="#" class="navigation-item" [class.navigation-item--active]="activePage === 'Sent'"
+                (click)="setActivePage('Sent')">
+                <img src="assets/images/Navbar/sent.png" class="navigation-item__icon" />
+                <span class="navigation-item__text">Sent</span>
+            </a>
+            <a href="#" class="navigation-item" [class.navigation-item--active]="activePage === 'Trash'"
+                (click)="setActivePage('Trash')">
+                <img src="assets/images/Navbar/trash.png" class="navigation-item__icon" />
+                <span class="navigation-item__text">Trash</span>
+            </a>
+            <a href="#" class="navigation-item" [class.navigation-item--active]="activePage === 'More'"
+                (click)="setActivePage('More')">
+                <img src="assets/images/Navbar/flagged.png" class="navigation-item__icon" />
+                <span class="navigation-item__text">More</span>
+            </a>
+        </nav>
+
+        <div class="section-header">
+            <span class="section-header__title">Folders</span>
+            <button class="section-header__add-button">Add</button>
+        </div>
+
+        <nav>
+            <a href="#" class="navigation-item">
+                <img src="assets/images/Navbar/office.png" class="navigation-item__icon" />
+                <span class="navigation-item__text">Office</span>
+            </a>
+            <a href="#" class="navigation-item">
+                <img src="assets/images/Navbar/personal.png" class="navigation-item__icon" />
+                <span class="navigation-item__text">Personal</span>
+            </a>
+            <a href="#" class="navigation-item">
+                <img src="assets/images/Navbar/freelance.png" class="navigation-item__icon" />
+                <span class="navigation-item__text">Freelance</span>
+            </a>
+        </nav>
+        <div>
+            <button class="compose-button" (click)="openCompose()">
+                Compose
+            </button>
+        </div>
+    </aside>
+
+    <div class="middle-column" *ngIf="!hide">
+        <div class="search-bar-container">
+            <input type="text" placeholder="Search" class="search-bar" [(ngModel)]="searchTerm"
+                (input)="onSearchChange()" />
+        </div>
+
+        <div class="under-construction-message" *ngIf="activePage !== 'Inbox'">
+            <h2>🚧 Page under construction</h2>
+            <p>The "{{ activePage }}" section is coming soon.</p>
+        </div>
+
+        <div class="email-list" *ngIf="activePage === 'Inbox'">
+            <app-email-list-item *ngFor="let email of emails; let i = index" [avatarUrl]="email.avatarUrl"
+                [sender]="email.sender" [date]="email.date" [subject]="email.subject" [snippet]="email.snippet"
+                [email]="email" [attachmentsCount]="email.attachmentsCount"
+                [isActive]="!!email.isRead && activePage === 'Inbox'" (emailSelected)="onEmailSelected($event)">
+            </app-email-list-item>
+        </div>
+    </div>
+
+    <div class="right-column">
+        <div style="margin-bottom: 20px; margin-left: 105px" *ngIf="!isMobileView">
+            <img src="assets/images/Navbar/backbutton.png" alt="back Icon" class="back-icon" />
+        </div>
+        <div class="email-details-wrapper" *ngIf="selectedEmail && activePage === 'Inbox'">
+            <app-email-details [senderName]="selectedEmail.sender" [senderEmail]="selectedEmail.senderEmail"
+                [date]="selectedEmail.date" [avatarUrl]="selectedEmail.avatarUrl" [body]="selectedEmail.body"
+                [attachments]="mappedAttachments" (backToList)="onBackToList()">
+            </app-email-details>
+        </div>
+    </div>
+</div>
+<app-compose-mail></app-compose-mail>
